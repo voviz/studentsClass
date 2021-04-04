@@ -1,5 +1,7 @@
-import classstudent.GroupOfStudents;
-import classstudent.Student;
+package Test;
+
+import GroupOfStudents.GroupOfStudents;
+import GroupOfStudents.Student;
 
 import org.junit.jupiter.api.Test;
 

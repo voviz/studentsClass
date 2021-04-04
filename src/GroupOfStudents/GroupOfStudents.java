@@ -1,7 +1,8 @@
-package classstudent;
+package GroupOfStudents;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class GroupOfStudents {
     private final Integer number;
@@ -17,7 +18,9 @@ public class GroupOfStudents {
     }
 
     public boolean addStudent(Student student) {
-        return this.listOfStudents.add(student);
+        if (!listOfStudents.contains(student))
+            return this.listOfStudents.add(student);
+        return false;
     }
 
     private Student getStudent(String studentName) {
@@ -33,42 +36,51 @@ public class GroupOfStudents {
     }
 
     public boolean addSubject(String subject) {
-        if (subject == null || subject.isEmpty()) return false;
+        if (isNotCorrect(subject)) return false;
         for (Student student : listOfStudents) {
             if (!student.getSubjects().containsKey(subject))
-                student.getSubjects().put(subject, null);
+                student.putSubject(subject);
         }
         return true;
     }
 
     public boolean removeSubject(String subject) {
         boolean flag = false;
-        if (subject.isEmpty()) return false;
+        if (isNotCorrect(subject)) return false;
         for (Student student : listOfStudents) {
             if (student.getSubjects().containsKey(subject))
                 flag = true;
-            student.getSubjects().remove(subject);
+            student.deleteSubject(subject);
         }
         return flag;
+    }
+    private boolean isMarkOk(Integer mark) {
+        return mark > 1 && mark < 10;
     }
 
     public boolean addMark(String studentName, String subject, Integer mark) {
         Student student = getStudent(studentName);
-        if (student == null || subject.isEmpty() || mark == null) return false;
+        if (isNotCorrect(studentName) || isNotCorrect(subject) || isNotCorrect(mark)) return false;
         if (student.getSubjects().containsKey(subject) && student.getSubjects().get(subject) == null) {
-            student.getSubjects().put(subject, mark);
+            student.putMark(subject, mark);
             return true;
         }
         return false;
     }
 
+    private boolean isNotCorrect(Object obj) {
+        if (obj instanceof String) return ((String) obj).isEmpty();
+        else if (obj instanceof Integer) return !isMarkOk((Integer) obj);
+        return obj == null;
+    }
+
     public boolean changeMark(String studentName, String subject, Integer mark) {
         Student student = getStudent(studentName);
-        if (student == null || subject.isEmpty() || mark == null) return false;
+        if (isNotCorrect(studentName) || isNotCorrect(subject) || isNotCorrect(mark)) return false;
         if (student.getSubjects().containsKey(subject) &&
                 student.getSubjects().get(subject) != null &&
                 !student.getSubjects().get(subject).equals(mark)) {
-            student.getSubjects().put(subject, mark);
+            student.putMark(subject, mark);
             return true;
         }
         return false;
@@ -76,28 +88,26 @@ public class GroupOfStudents {
 
     public boolean deleteMark(String studentName, String subject) {
         Student student = getStudent(studentName);
-        if (student == null || subject.isEmpty()) return false;
+        if (isNotCorrect(studentName) || isNotCorrect(subject)) return false;
         if (student.getSubjects().containsKey(subject) && student.getSubjects().get(subject) != null) {
-            student.getSubjects().put(subject, null);
+            student.putMark(subject, null);
             return true;
         }
         return false;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof GroupOfStudents)) return false;
-        if (((GroupOfStudents) obj).listOfStudents.size() != this.listOfStudents.size()) return false;
-        if (!((GroupOfStudents) obj).number.equals(this.number)) return false;
-        for (Student student : listOfStudents) {
-            if (!((GroupOfStudents) obj).listOfStudents.contains(student)) return false;
-        }
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GroupOfStudents that = (GroupOfStudents) o;
+        return Objects.equals(number, that.number) &&
+                Objects.equals(listOfStudents, that.listOfStudents);
     }
 
     @Override
     public int hashCode() {
-        return listOfStudents.hashCode() + number.hashCode();
+        return Objects.hash(number, listOfStudents);
     }
 }
 

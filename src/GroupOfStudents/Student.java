@@ -1,4 +1,4 @@
-package classstudent;
+package GroupOfStudents;
 
 import java.util.*;
 
@@ -24,25 +24,32 @@ public class Student {
     }
 
     public Map<String, Integer> getSubjects() {
-        return subjects;
+        return new HashMap<>(this.subjects);
+    }
+
+    public void putSubject(String subject) {
+        this.subjects.put(subject, null);
+    }
+
+    public void deleteSubject(String subject) {
+        this.subjects.remove(subject);
+    }
+
+    public void putMark(String subject, Integer mark) {
+        this.subjects.put(subject, mark);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof Student)) return false;
-        if (((Student) obj).name.isEmpty() || this.name.isEmpty()) return false;
-        if (!((Student) obj).name.equals(this.name)) return false;
-        if (((Student) obj).subjects == null && this.subjects == null) return true;
-        else if (
-                ((Student) obj).subjects == null && this.subjects != null ||
-                        ((Student) obj).subjects != null && this.subjects == null
-        ) return false;
-        else return ((Student) obj).subjects.equals(this.subjects);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Student student = (Student) o;
+        return Objects.equals(name, student.name) &&
+                Objects.equals(subjects, student.subjects);
     }
 
     @Override
     public int hashCode() {
-        return subjects.hashCode() + name.hashCode();
+        return Objects.hash(name, subjects);
     }
 }
